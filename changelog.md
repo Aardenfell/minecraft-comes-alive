@@ -1,3 +1,7 @@
+# 7.5.20
+
+* Fixed Library Auth
+
 # 7.5.19
 
 * Fixed trait shaders
