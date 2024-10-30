@@ -352,18 +352,6 @@ public class SkinLibraryScreen extends Screen implements SkinListUpdateListener 
 
                 matrices.pop();
 
-                //hovered element
-                int x = (int) getPixelX();
-                int y = (int) getPixelY();
-                if (x >= 0 && x < 64 && y >= 0 && y < 64) {
-                    SkinLocations.Part part = SkinLocations.LOOKUP[x][y];
-                    if (part != null) {
-                        Text text = part.getTranslation();
-                        int textWidth = textRenderer.getWidth(text);
-                        context.drawTooltip(textRenderer, text, width / 2 - textWidth / 2 - 12, height / 2 - 68);
-                    }
-                }
-
                 //dummy
                 if (workspace.skinType == SkinType.CLOTHING) {
                     villagerVisualization.setHair(EMPTY_IDENTIFIER);
@@ -381,6 +369,18 @@ public class SkinLibraryScreen extends Screen implements SkinListUpdateListener 
 
                 if (workspace.skinType == SkinType.HAIR) {
                     context.drawCenteredTextWithShadow(textRenderer, Text.translatable("gui.skin_library.hair_color"), width / 2 - 150, height / 2 - 40, 0xAAFFFFFF);
+                }
+
+                //hovered element
+                int x = (int) getPixelX();
+                int y = (int) getPixelY();
+                if (x >= 0 && x < 64 && y >= 0 && y < 64) {
+                    SkinLocations.Part part = SkinLocations.LOOKUP[x][y];
+                    if (part != null) {
+                        Text text = part.getTranslation();
+                        int textWidth = textRenderer.getWidth(text);
+                        context.drawTooltip(textRenderer, text, width / 2 - textWidth / 2 - 12, height / 2 - 68);
+                    }
                 }
             }
             case LOGIN -> {
