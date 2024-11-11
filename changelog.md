@@ -1,3 +1,7 @@
+# 7.5.21
+
+* Fixed Library Auth when updating from older version
+
 # 7.5.20
 
 * Fixed Library Auth
@@ -31,7 +35,8 @@
 
 # 7.5.15
 
-* Merged [Inworld integration](https://github.com/Luke100000/minecraft-comes-alive/wiki/GPT3-based-conversations) branch (thanks CSCMe!)
+* Merged [Inworld integration](https://github.com/Luke100000/minecraft-comes-alive/wiki/GPT3-based-conversations)
+  branch (thanks CSCMe!)
 * Fixed incompatibility with Cobblemon (thanks Apion!)
 * Fixed AI issues with Grim Reapers, causing him to go much higher than intended
 * Fixed issues when using Arabic numerals
