@@ -1,8 +1,8 @@
 import json
 import os
 
-from scripts.countries import COUNTRIES
-from scripts.unicodes import UNICODES
+from countries import COUNTRIES
+from unicodes import UNICODES
 
 genders = {
     "M": ["male"],
@@ -14,7 +14,7 @@ genders = {
     "?": ["male", "female"],
 }
 
-export = "../common/src/main/resources/data/mca/names/"
+export = "../../common/src/main/resources/data/mca/names/"
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
             "female": {},
         }
 
-    with open("rawNames.txt", "r") as f:
+    with open("raw_names.txt", "r") as f:
         for line in f.readlines():
             if len(line) > 0 and not line.startswith("#"):
                 gender = line[0:3].strip()
