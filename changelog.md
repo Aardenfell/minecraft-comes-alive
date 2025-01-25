@@ -1,6 +1,7 @@
 # 7.5.22
 
 * Fixed Library Auth once again.
+* Fixed Alex skins being converted to Alex skins again.
 
 # 7.5.21
 
