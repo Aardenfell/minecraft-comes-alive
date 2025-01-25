@@ -1,3 +1,7 @@
+# 7.5.22
+
+* Fixed Library Auth once again.
+
 # 7.5.21
 
 * Fixed Library Auth when updating from older version
