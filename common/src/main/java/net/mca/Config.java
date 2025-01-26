@@ -120,7 +120,7 @@ public final class Config implements Serializable {
 
     // TTS
     public boolean enableOnlineTTS = false;
-    public String villagerTTSServer = "http://api.rk.conczin.net/";
+    public String villagerTTSServer = "https://api.rk.conczin.net/";
 
     //village behavior
     public float guardSpawnFraction = 0.175f;
