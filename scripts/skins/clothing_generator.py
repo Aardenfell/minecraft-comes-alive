@@ -1,11 +1,11 @@
+import argparse
 import glob
 import hashlib
-import numpy as np
 import os
-from cv2 import cv2
-from tqdm import tqdm
 
-path = "../../common/src/main/resources/assets/mca/skins/clothing/"
+import cv2
+import numpy as np
+from tqdm import tqdm
 
 # we allow 10 seconds to check out to avoid considering clothes outdated because of a checkout
 checkout_time = 10
@@ -16,9 +16,10 @@ def img_load(img_file):
 
 
 # masks and textures
-torn_tex = img_load("res/torn.png")
-moss_tex = img_load("res/moss.png")
-burn_tex = img_load("res/burnt.png")
+root = os.path.dirname(os.path.realpath(__file__))
+torn_tex = img_load(root + "/res/torn.png")
+moss_tex = img_load(root + "/res/moss.png")
+burn_tex = img_load(root + "/res/burnt.png")
 
 
 def convert_to_zombie(skin_file: str):
@@ -90,9 +91,18 @@ def convert_list(files, files_source, func, repl):
 
 
 def main():
-    files_source = glob.glob(os.path.join(path, "normal/*/*/*.png"))
-    files_zombie = glob.glob(os.path.join(path, "zombie/*/*/*.png"))
-    files_burnt = glob.glob(os.path.join(path, "burnt/*/*/*.png"))
+    parser = argparse.ArgumentParser("Generate burnt and zombie clothes")
+    parser.add_argument(
+        "--path",
+        help="Path to the clothes",
+        type=str,
+        default="../../common/src/main/resources/assets/mca/skins/clothing/",
+    )
+    args = parser.parse_args()
+
+    files_source = glob.glob(os.path.join(args.path, "normal/*/*/*.png"))
+    files_zombie = glob.glob(os.path.join(args.path, "zombie/*/*/*.png"))
+    files_burnt = glob.glob(os.path.join(args.path, "burnt/*/*/*.png"))
 
     convert_list(files_zombie, files_source, convert_to_zombie, "zombie")
     convert_list(files_burnt, files_source, convert_to_burnt, "burnt")

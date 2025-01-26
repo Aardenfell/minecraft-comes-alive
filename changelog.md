@@ -5,6 +5,19 @@
 * Destiny now supports structure tags
 * Fixed compatibility issues with Productive Bees
 
+# 7.5.22
+
+* Fixed Library Auth once again.
+* Fixed Alex skins being converted to Alex skins again.
+
+# 7.5.21
+
+* Fixed Library Auth when updating from older version
+
+# 7.5.20
+
+* Fixed Library Auth
+
 # 7.5.19
 
 * Fixed trait shaders

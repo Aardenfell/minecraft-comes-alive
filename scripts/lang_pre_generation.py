@@ -22,7 +22,7 @@ def generate_phrases(system: str, prompt: str):
         top_p=1,
         max_tokens=512,
     )
-    return response.choices[0].message.content
+    return str(response.choices[0].message.content)
 
 
 def read_file(file_path: str):

@@ -23,6 +23,7 @@ replacements = {
     "Felipe Lizarrague Antona": "Felipe Antona",
     "[PT] Mlg Magic Hoodini [MemesFTW]": "Mlg Magic Hoodini",
     "Dalek_Caan_2001 Sharks of sliver": "Sharks of sliver",
+    "Maicon Alan de Aviz Santos": "Maicon Santos",
 }
 
 
@@ -39,12 +40,14 @@ def fetch_translators():
         unit=Unit.WORDS,
         format=Format.JSON,
     )
+    assert report_request
     identifier = report_request["data"]["identifier"]
 
     # Download the report
     while True:
         try:
             report = client.reports.download_report(identifier)
+            assert report
             url = report["data"]["url"]
             raw_data = requests.get(url).content
             members = json.loads(raw_data)
@@ -78,8 +81,8 @@ def fetch_translators():
 
     with open(
         "../common/src/main/resources/assets/mca/api/supporters/translators.json", "w"
-    ) as f:
-        json.dump(names, f, indent=2)
+    ) as translators_file:
+        json.dump(names, translators_file, indent=2)
 
 
 def fetch_patrons():
@@ -97,8 +100,8 @@ def fetch_patrons():
 
     with open(
         "../common/src/main/resources/assets/mca/api/supporters/patrons.json", "w"
-    ) as f:
-        json.dump(names, f, indent=2)
+    ) as patrons_file:
+        json.dump(names, patrons_file, indent=2)
 
 
 if __name__ == "__main__":

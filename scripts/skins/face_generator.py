@@ -1,11 +1,10 @@
+import argparse
 import glob
 import numpy as np
 import os
-from cv2 import cv2
+import cv2
 from scipy.ndimage import gaussian_filter
 from tqdm import tqdm
-
-path = "../../common/src/main/resources/assets/mca/skins/face/"
 
 
 def img_load(img_file):
@@ -37,8 +36,17 @@ def convert_to_zombie(skin_file: str):
 
 
 if __name__ == "__main__":
-    files_source = glob.glob(os.path.join(path, "normal/*/*.png"))
-    files_zombie = glob.glob(os.path.join(path, "zombie/*/*.png"))
+    parser = argparse.ArgumentParser("Generate burnt and zombie clothes")
+    parser.add_argument(
+        "--path",
+        help="Path to the clothes",
+        type=str,
+        default="../../common/src/main/resources/assets/mca/skins/face/",
+    )
+    args = parser.parse_args()
+
+    files_source = glob.glob(os.path.join(args.path, "normal/*/*.png"))
+    files_zombie = glob.glob(os.path.join(args.path, "zombie/*/*.png"))
 
     for file in tqdm(files_source):
         zombie_file = file.replace("normal", "zombie")
