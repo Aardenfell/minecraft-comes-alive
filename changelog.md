@@ -9,7 +9,7 @@
 # 7.5.22
 
 * Fixed Library Auth once again.
-* Fixed Alex skins being converted to Alex skins again.
+* Fixed Steve skins being converted to Steve skins again.
 
 # 7.5.21
 
