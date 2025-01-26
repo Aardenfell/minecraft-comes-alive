@@ -27,7 +27,7 @@ def getAppVersion = { ->
 allprojects {
     apply plugin: "maven-publish"
 
-    group = rootProject.group
+    group = rootProject.groupId
     description = rootProject.displayname
     archivesBaseName = rootProject.name
     version = getAppVersion()
@@ -77,15 +77,15 @@ forgix {
     outputDir = "build/libs"
 
     forge {
-        jarLocation = "build/libs/${rootProject.name}-${rootProject.version}-forge.jar"
+        jarLocation = "build/libs/forge-${rootProject.version}.jar"
         mixin "mca.mixin.json"
     }
 
     fabric {
-        jarLocation = "build/libs/${rootProject.name}-${rootProject.version}-fabric.jar"
+        jarLocation = "build/libs/fabric-${rootProject.version}.jar"
     }
 
     quilt {
-        jarLocation = "build/libs/${rootProject.name}-${rootProject.version}-quilt.jar"
+        jarLocation = "build/libs/quilt-${rootProject.version}.jar"
     }
 }
