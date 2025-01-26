@@ -76,15 +76,15 @@ forgix {
     outputDir = "build/libs"
 
     forge {
-        jarLocation = "build/libs/forge-${rootProject.version}.jar"
+        jarLocation = "build/libs/${rootProject.name}-${rootProject.version}.jar"
         mixin "mca.mixin.json"
     }
 
     fabric {
-        jarLocation = "build/libs/fabric-${rootProject.version}.jar"
+        jarLocation = "build/libs/${rootProject.name}-${rootProject.version}.jar"
     }
 
     quilt {
-        jarLocation = "build/libs/quilt-${rootProject.version}.jar"
+        jarLocation = "build/libs/${rootProject.name}-${rootProject.version}.jar"
     }
 }
