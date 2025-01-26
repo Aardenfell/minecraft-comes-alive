@@ -1,3 +1,7 @@
+# 7.6.1
+
+* Fixed crash on Forge
+
 # 7.6.0
 
 * Added cribs, a lot of cribs, in all colors and woods

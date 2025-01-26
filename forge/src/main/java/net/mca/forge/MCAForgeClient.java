@@ -59,7 +59,7 @@ public final class MCAForgeClient {
         }
 
         EntityRenderers.register(EntitiesMCA.GRIM_REAPER.get(), GrimReaperRenderer::new);
-        EntityRendererRegistry.register(EntitiesMCA.CRIB, CribEntityRenderer::new);
+        EntityRenderers.register(EntitiesMCA.CRIB.get(), CribEntityRenderer::new);
 
         BlockEntityRendererFactories.register(BlockEntityTypesMCA.TOMBSTONE.get(), TombstoneBlockEntityRenderer::new);
 
