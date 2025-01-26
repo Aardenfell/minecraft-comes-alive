@@ -4,6 +4,7 @@
 * Some gift registry updates
 * Destiny now supports structure tags
 * Fixed compatibility issues with Productive Bees
+* Renamed names data dir to avoid conflicts
 
 # 7.5.22
 
