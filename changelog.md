@@ -2,6 +2,7 @@
 
 * Fixed crash on Turkish locale
 * Fixed Cribs crashing on wood compat mods
+* Fixed glowing villagers being visible
 
 # 7.6.1
 
