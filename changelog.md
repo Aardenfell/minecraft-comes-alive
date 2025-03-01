@@ -1,3 +1,7 @@
+# 7.6.2
+
+* Fixed crash on Turkish locale
+
 # 7.6.1
 
 * Fixed crash on Forge

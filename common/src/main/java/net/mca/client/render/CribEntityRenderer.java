@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -48,7 +49,7 @@ public class CribEntityRenderer extends EntityRenderer<CribEntity>
     	
         this.itemRenderer = ctx.getItemRenderer();
         
-        this.model = new CribEntityModel<CribEntity>(TexturedModelData.of(CribEntityModel.getModelData(Dilation.NONE), TEXTURE_WIDTH, TEXTURE_HEIGHT).createModel());
+        this.model = new CribEntityModel<>(TexturedModelData.of(CribEntityModel.getModelData(Dilation.NONE), TEXTURE_WIDTH, TEXTURE_HEIGHT).createModel());
         this.shadowRadius = 0.75F;
         
         for(CribWoodType woodType : CribWoodType.values())
@@ -92,12 +93,12 @@ public class CribEntityRenderer extends EntityRenderer<CribEntity>
     }
     
     private String getTextureID(CribEntity cribEntity) { return getTextureID(cribEntity.getWoodType(), cribEntity.getColor()); }
-    private String getTextureID(CribWoodType wood, DyeColor color) { return wood.toString().toLowerCase() + "-" + color.getName(); }
+    private String getTextureID(CribWoodType wood, DyeColor color) { return wood.toString().toLowerCase(Locale.ROOT) + "-" + color.getName(); }
     
     // Create the crib texture from multiple layers depending on crib wood material and wool color
     private Identifier generateMultiTexture(CribWoodType wood, DyeColor color) throws IOException
     {
-		BufferedImage frame = ImageIO.read(getClass().getResourceAsStream("/assets/mca/textures/entity/crib/frames/" + wood.toString().toLowerCase() + ".png"));
+		BufferedImage frame = ImageIO.read(getClass().getResourceAsStream("/assets/mca/textures/entity/crib/frames/" + wood.toString().toLowerCase(Locale.ROOT) + ".png"));
 		BufferedImage bed = ImageIO.read(getClass().getResourceAsStream("/assets/mca/textures/entity/crib/beds/" + color.getName() + ".png"));
     	
     	BufferedImage combined = new BufferedImage(TEXTURE_WIDTH, TEXTURE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
