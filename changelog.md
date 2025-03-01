@@ -1,6 +1,7 @@
 # 7.6.2
 
 * Fixed crash on Turkish locale
+* Fixed Cribs crashing on wood compat mods
 
 # 7.6.1
 
