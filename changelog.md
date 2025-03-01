@@ -3,6 +3,7 @@
 * Fixed crash on Turkish locale
 * Fixed Cribs crashing on wood compat mods
 * Fixed glowing villagers being visible
+* Fixed crash when using structure tags in destiny
 
 # 7.6.1
 
