@@ -2,6 +2,7 @@
 
 * Turned villager teleportation back on by default
 * Fixed spawn group causing issues with some sound mods
+* Modded jobless traders now show the trade button
 
 # 7.6.2
 
