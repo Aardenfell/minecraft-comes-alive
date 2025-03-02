@@ -1,6 +1,7 @@
 # 7.6.3
 
 * Turned villager teleportation back on by default
+* Fixed spawn group causing issues with some sound mods
 
 # 7.6.2
 
