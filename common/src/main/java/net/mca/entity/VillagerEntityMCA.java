@@ -687,7 +687,7 @@ public class VillagerEntityMCA extends VillagerEntity implements VillagerLike<Vi
     }
 
     private int getMaxWarnings(PlayerEntity attacker) {
-        return getVillagerBrain().getMemoriesForPlayer(attacker).getHearts() / Config.getInstance().heartsForPardonHit;
+        return getVillagerBrain().getMemoriesForPlayer(attacker).getHearts() / Math.max(1, Config.getInstance().heartsForPardonHit);
     }
 
     @Override
