@@ -1,3 +1,7 @@
+# 7.6.3
+
+* Turned villager teleportation back on by default
+
 # 7.6.2
 
 * Fixed crash on Turkish locale

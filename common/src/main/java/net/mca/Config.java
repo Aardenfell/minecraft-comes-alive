@@ -66,8 +66,8 @@ public final class Config implements Serializable {
     public int babyItemGrowUpTime = 24000;
     public int villagerMaxAgeTime = 384000;
     public int villagerMaxHealth = 20;
-    public boolean allowVillagerTeleporting = false;
-    public double villagerMinTeleportationDistance = 64;
+    public boolean allowVillagerTeleporting = true;
+    public double villagerMinTeleportationDistance = 32;
     public int childInitialHearts = 100;
     public int greetHeartsThreshold = 75;
     public int greetAfterDays = 1;
