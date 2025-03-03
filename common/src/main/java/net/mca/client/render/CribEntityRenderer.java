@@ -100,16 +100,17 @@ public class CribEntityRenderer extends EntityRenderer<CribEntity> {
 
     // Create the crib texture from multiple layers depending on crib wood material and wool color
     private Identifier generateMultiTexture(CribWoodType wood, DyeColor color) throws IOException {
-        InputStream frameStream = getClass().getResourceAsStream("/assets/mca/textures/entity/crib/frames/" + wood.toString().toLowerCase(Locale.ROOT) + ".png");
+        ClassLoader loader = MCA.class.getClassLoader();
+        InputStream frameStream = loader.getResourceAsStream("assets/mca/textures/entity/crib/frames/" + wood.toString().toLowerCase(Locale.ROOT) + ".png");
         if (frameStream == null) {
-            frameStream = getClass().getResourceAsStream("/assets/mca/textures/entity/crib/frames/oak.png");
+            frameStream = loader.getResourceAsStream("assets/mca/textures/entity/crib/frames/oak.png");
         }
         assert frameStream != null;
 
         BufferedImage frame = ImageIO.read(frameStream);
-        InputStream bedStream = getClass().getResourceAsStream("/assets/mca/textures/entity/crib/beds/" + color.getName() + ".png");
+        InputStream bedStream = loader.getResourceAsStream("assets/mca/textures/entity/crib/beds/" + color.getName() + ".png");
         if (bedStream == null) {
-            bedStream = getClass().getResourceAsStream("/assets/mca/textures/entity/crib/beds/white.png");
+            bedStream = loader.getResourceAsStream("assets/mca/textures/entity/crib/beds/white.png");
         }
         assert bedStream != null;
         BufferedImage bed = ImageIO.read(bedStream);
