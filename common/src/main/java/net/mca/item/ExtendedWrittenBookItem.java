@@ -1,9 +1,5 @@
 package net.mca.item;
 
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.mca.client.book.Book;
 import net.mca.client.book.pages.TextPage;
 import net.mca.cobalt.network.NetworkHandler;
@@ -20,8 +16,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
-
+import java.util.List;
 
 public class ExtendedWrittenBookItem extends WrittenBookItem {
     private final Book book;
