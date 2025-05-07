@@ -1,3 +1,7 @@
+# 7.6.4
+
+* Rose gold does no longer classify as gold, interfering with recipes
+
 # 7.6.3
 
 * Turned villager teleportation back on by default
