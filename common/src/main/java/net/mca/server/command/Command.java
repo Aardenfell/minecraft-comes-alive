@@ -14,7 +14,7 @@ import net.mca.client.SpeechManager;
 import net.mca.cobalt.network.NetworkHandler;
 import net.mca.entity.VillagerEntityMCA;
 import net.mca.entity.ai.chatAI.ChatAI;
-import net.mca.entity.ai.chatAI.GPT3;
+import net.mca.entity.ai.chatAI.OpenAIChatAI;
 import net.mca.entity.ai.relationship.Personality;
 import net.mca.network.s2c.OpenGuiRequest;
 import net.mca.server.ServerInteractionManager;
@@ -229,7 +229,7 @@ public class Command {
                     .map(key -> key + "=" + URLEncoder.encode(params.get(key), StandardCharsets.UTF_8))
                     .collect(Collectors.joining("&", Config.getInstance().villagerChatAIEndpoint.replace("v1/mca/chat", "v1/mca/verify") + "?", ""));
 
-            GPT3.Answer request = GPT3.request(encodedURL);
+            OpenAIChatAI.Answer request = OpenAIChatAI.request(encodedURL);
 
             if (request.answer().equals("success")) {
                 sendMessage(ctx, Text.translatable("command.verify.success").formatted(Formatting.GREEN));

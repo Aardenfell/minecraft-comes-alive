@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import static net.mca.entity.VillagerLike.VILLAGER_NAME;
 
 public class ChatAI {
-
     /** Max range to find a villager in */
     private static final int VILLAGER_SEARCH_RANGE = 32;
 
@@ -59,7 +58,7 @@ public class ChatAI {
     private static ChatAIStrategy computeStrategyIfAbsent(UUID villagerID) {
         return strategies.computeIfAbsent(villagerID, v -> {
             String inworldResourceName = Config.getInstance().inworldAIResourceNames.getOrDefault(v, "");
-            return inworldResourceName.isEmpty() ? new GPT3() : new InworldAI(inworldResourceName);
+            return inworldResourceName.isEmpty() ? new OpenAIChatAI() : new InworldAI(inworldResourceName);
         });
     }
 

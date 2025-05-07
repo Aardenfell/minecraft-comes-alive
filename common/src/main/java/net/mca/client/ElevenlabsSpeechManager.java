@@ -32,7 +32,7 @@ public class ElevenlabsSpeechManager {
     private final MinecraftClient client;
     private boolean warningIssued = false;
 
-    private static final String XI_API_KEY = Config.getInstance().elevenlabsPrivteAPIkey;  // ElevenLabs API key
+    private static final String XI_API_KEY = Config.getInstance().elevenlabsPrivateAPIkey;  // ElevenLabs API key
     private static final int CHUNK_SIZE = 1024;  // Chunk size for streaming
     private static final String MODEL_ID = "eleven_multilingual_v2";  // ElevenLabs TTS model ID
 

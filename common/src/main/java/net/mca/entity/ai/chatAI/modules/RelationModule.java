@@ -1,4 +1,4 @@
-package net.mca.entity.ai.chatAI.gpt3Modules;
+package net.mca.entity.ai.chatAI.modules;
 
 import net.mca.Config;
 import net.mca.entity.VillagerEntityMCA;

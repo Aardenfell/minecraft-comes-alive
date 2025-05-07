@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import net.mca.Config;
 import net.mca.MCA;
 import net.mca.entity.VillagerEntityMCA;
-import net.mca.entity.ai.chatAI.gpt3Modules.*;
+import net.mca.entity.ai.chatAI.modules.*;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -23,7 +23,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class GPT3 implements ChatAIStrategy {
+public class OpenAIChatAI implements ChatAIStrategy {
     private static final int MIN_MEMORY = 100;
     private static final int MAX_MEMORY = 600;
     private static final int MAX_MEMORY_TIME = 20 * 60 * 45;

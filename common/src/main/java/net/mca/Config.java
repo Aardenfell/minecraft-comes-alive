@@ -104,6 +104,7 @@ public final class Config implements Serializable {
     public int trackVillagerPositionEveryNTicks = 200;
 
     //AI
+    @SuppressWarnings("unused")
     public String _read_this_before_using_villager_ai = "https://github.com/Luke100000/minecraft-comes-alive/wiki/GPT3-based-conversations";
     public boolean enableVillagerChatAI = false;
     public int villagerChatAIIntelligence = 4;
@@ -115,6 +116,7 @@ public final class Config implements Serializable {
     public boolean villagerChatAIUseSharedLongTermMemory = false;
     public boolean villagerChatAIIncludeSessionInformation = false;
 
+    //InworldAI
     public String inworldAIToken = "";
     public Map<UUID, String> inworldAIResourceNames = new HashMap<>();
 
@@ -122,7 +124,7 @@ public final class Config implements Serializable {
     public boolean enableOnlineTTS = false;
     public String villagerTTSServer = "https://api.rk.conczin.net/";
     public boolean enableElvenlabsTTS = false;
-    public String elevenlabsPrivteAPIkey = "replace with your private Elevenlabs API Key";
+    public String elevenlabsPrivateAPIkey = "";
 
     //village behavior
     public float guardSpawnFraction = 0.175f;
