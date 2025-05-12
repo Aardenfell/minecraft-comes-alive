@@ -24,8 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class OpenAIChatAI implements ChatAIStrategy {
-    private static final int MIN_MEMORY = 100;
-    private static final int MAX_MEMORY = 600;
+    private static final int MAX_MEMORY = 500;
     private static final int MAX_MEMORY_TIME = 20 * 60 * 45;
 
     private static final Map<UUID, List<Pair<String, String>>> memory = new HashMap<>();
@@ -101,7 +100,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
     public Optional<String> answer(ServerPlayerEntity player, VillagerEntityMCA villager, String msg) {
         try {
             Config config = Config.getInstance();
-            boolean isInhouse = config.villagerChatAIEndpoint.contains("conczin.net");
+            boolean isInHouse = config.villagerChatAIEndpoint.contains("conczin.net");
 
             String playerName = player.getName().getString();
             String villagerName = villager.getName().getString();
@@ -115,8 +114,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
 
             // remember phrase
             List<Pair<String, String>> pastDialogue = memory.computeIfAbsent(villager.getUuid(), key -> new LinkedList<>());
-            int memory = MIN_MEMORY + Math.min(5, config.villagerChatAIIntelligence) * (MAX_MEMORY - MIN_MEMORY) / 5;
-            while (pastDialogue.stream().mapToInt(v -> (v.getRight().length() / 4)).sum() > memory) {
+            while (pastDialogue.stream().mapToInt(v -> (v.getRight().length() / 4)).sum() > MAX_MEMORY) {
                 pastDialogue.remove(0);
             }
 
@@ -128,7 +126,6 @@ public class OpenAIChatAI implements ChatAIStrategy {
             VillageModule.apply(input, villager, player);
             EnvironmentModule.apply(input, villager, player);
             PlayerModule.apply(input, villager, player);
-            // todo add family
 
             // gather variables
             Map<String, String> variables = Map.of(
@@ -140,7 +137,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
             StringBuilder sb = new StringBuilder();
 
             // add control variables
-            if (isInhouse || config.villagerChatAIIncludeSessionInformation) {
+            if (isInHouse || config.villagerChatAIIncludeSessionInformation) {
                 long seed = player.getServerWorld().getSeed();
                 sb.append("[world_id:").append(seed).append("]");
 
@@ -159,7 +156,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
                 // add user specified prompt
                 sb.append(config.villagerChatAISystemPrompt);
                 sb.append("\n");
-            } else if (!isInhouse) {
+            } else if (!isInHouse) {
                 // when not using conczin.net, use some default prompt
                 String defaultPrompt = "You are a Minecraft villager, fully immersed in their virtual world, unaware of its artificial nature. You respond based on your description, your role, and your knowledge of the world. You have no knowledge of the real world, and do not realize that you are within Minecraft. You are no assistant! You can be sarcastic, funny, or even rude when appropriate.";
                 sb.append(defaultPrompt);
