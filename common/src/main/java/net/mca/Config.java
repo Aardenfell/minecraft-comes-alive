@@ -122,9 +122,23 @@ public final class Config implements Serializable {
 
     // TTS
     public boolean enableOnlineTTS = false;
-    public String villagerTTSServer = "https://api.rk.conczin.net/";
-    public boolean enableElvenlabsTTS = false;
+    public String onlineTTSModel = "default";
+    public String onlineTTSServer = "https://api.rk.conczin.net/";
+    public String player2Url = "http://127.0.0.1:4315/";
     public String elevenlabsPrivateAPIkey = "";
+    public String elevenlabsModel = "eleven_turbo_v2_5";
+    public List<String> elevenlabsMaleVoices = List.of(
+            "ErXwobaYiN019PkySvjV",
+            "VR6AewLTigWG4xSOukaG",
+            "onwK4e9ZLuTAKqWW03F9",
+            "onwK4e9ZLuTAKqWW03F9"
+    );
+    public List<String> elevenlabsFemaleVoices = List.of(
+            "MF3mGyEYCl7XYWbV9V6O",
+            "AZnzlk1XvdvUeBnXmlld",
+            "pMsXgVXv3BLzUgSXRplE",
+            "AZnzlk1XvdvUeBnXmlld"
+    );
 
     //village behavior
     public float guardSpawnFraction = 0.175f;

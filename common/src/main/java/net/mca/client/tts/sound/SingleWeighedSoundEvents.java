@@ -1,4 +1,4 @@
-package net.mca.client.sound;
+package net.mca.client.tts.sound;
 
 import net.minecraft.client.sound.Sound;
 import net.minecraft.client.sound.WeightedSoundSet;

@@ -1,9 +1,9 @@
-package net.mca.client;
+package net.mca.client.tts.resources;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LanguageMap {
+public class OnlineLanguageMap {
     public static final Map<String, String> LANGUAGE_MAP = new HashMap<>();
 
     static {
