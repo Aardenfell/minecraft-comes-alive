@@ -33,7 +33,7 @@ public class SpeechManager {
     private final LimitedLinkedHashMap<UUID, EntityTrackingSoundInstance> currentlyPlaying = new LimitedLinkedHashMap<>(10);
 
     private final RealtimeSpeechManager realtimeSpeechManager = new RealtimeSpeechManager(Config.getInstance().onlineTTSServer);
-    private final RealtimeSpeechManager player2SpeechManager = new RealtimeSpeechManager(Config.getInstance().player2Url);
+    private final Player2SpeechManager player2SpeechManager = new Player2SpeechManager(Config.getInstance().player2Url);
     private final ElevenlabsSpeechManager elevenlabsSpeechManager = new ElevenlabsSpeechManager();
     private final OnlineSpeechManager onlineSpeechManager = new OnlineSpeechManager();
 
@@ -103,10 +103,9 @@ public class SpeechManager {
         if (Config.getInstance().enableOnlineTTS) {
             String gameLang = client.options.language;
             switch (Config.getInstance().onlineTTSModel) {
-                case "player2" ->
-                        player2SpeechManager.play(phrase, gender, gameLang, pitch, gene, villager, translatable);
                 case "realtime" ->
                         realtimeSpeechManager.play(phrase, gender, gameLang, pitch, gene, villager, translatable);
+                case "player2" -> player2SpeechManager.play(phrase, gender, gameLang, pitch, gene);
                 case "elevenlabs" -> elevenlabsSpeechManager.play(phrase, gender, pitch, gene, villager, translatable);
                 default -> onlineSpeechManager.play(phrase, gameLang, gender, pitch, gene, villager, translatable);
             }

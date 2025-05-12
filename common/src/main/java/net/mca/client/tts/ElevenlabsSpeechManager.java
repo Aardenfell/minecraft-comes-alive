@@ -23,7 +23,7 @@ public class ElevenlabsSpeechManager extends RealtimeSpeechManager {
     public void downloadAudio(OutputStream output, String voiceId, String text) {
         String payload = String.format(
                 "{\"text\": \"%s\", \"model_id\": \"%s\", \"voice_settings\": {\"stability\": 0.3, \"similarity_boost\": 0.5, \"style\": 0.05, \"use_speaker_boost\": true}}",
-                OnlineSpeechManager.cleanPhrase(text), Config.getInstance().elevenlabsModel
+                text, Config.getInstance().elevenlabsModel
         );
         RealtimeSpeechManager.download(output, this.url + voiceId + "?output_format=pcm_22050", payload, Config.getInstance().elevenlabsPrivateAPIkey);
     }

@@ -25,15 +25,19 @@ public class RealtimeSpeechManager {
         this.url = url;
     }
 
-    @SuppressWarnings("unused")
     public static class VoiceInfo {
         String id;
-        String name;
         String language;
         String gender;
+
+        public VoiceInfo(String id, String language, String gender) {
+            this.id = id;
+            this.language = language;
+            this.gender = gender;
+        }
     }
 
-    private static Map<String, VoiceInfo> voiceInfoMap;
+    public Map<String, VoiceInfo> voiceInfoMap;
 
     public void play(String text, String gender, String language, float pitch, float gene, Entity entity, boolean cacheable) {
         List<String> voices = getVoices(language, gender);
@@ -46,9 +50,10 @@ public class RealtimeSpeechManager {
         play(text, pitch, entity, cacheable, voices.get(tone));
     }
 
-    public void play(String text, float pitch, Entity entity, boolean cacheable, String voice) {
-        String hash = cacheable ? AudioCache.getHash(voice) + "/" + AudioCache.getHash(text) : "realtime";
+    public void play(String phrase, float pitch, Entity entity, boolean cacheable, String voice) {
         CompletableFuture.runAsync(() -> {
+            String text = cacheable ? OnlineSpeechManager.cleanPhrase(phrase) : phrase;
+            String hash = cacheable ? AudioCache.getHash(voice) + "/" + AudioCache.getHash(text) : "realtime";
             if (AudioCache.get(hash, output -> {
                 downloadAudio(output, voice, text);
             }, cacheable)) {
@@ -60,7 +65,7 @@ public class RealtimeSpeechManager {
 
     public List<String> getVoices(String language, String gender) {
         if (voiceInfoMap == null) {
-            voiceInfoMap = fetchVoices();
+            voiceInfoMap = fetchVoices(this.url + "v1/tts/piper/voices");
         }
         if (voiceInfoMap == null) {
             return Collections.emptyList();
@@ -71,8 +76,7 @@ public class RealtimeSpeechManager {
                 .toList();
     }
 
-    public Map<String, VoiceInfo> fetchVoices() {
-        String url = this.url + "v1/tts/piper/voices";
+    public Map<String, VoiceInfo> fetchVoices(String url) {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestMethod("GET");
@@ -86,11 +90,11 @@ public class RealtimeSpeechManager {
                 Map<String, VoiceInfo> result = new HashMap<>();
                 for (JsonElement elem : voices) {
                     JsonObject obj = elem.getAsJsonObject();
-                    VoiceInfo info = new VoiceInfo();
-                    info.id = obj.get("id").getAsString();
-                    info.name = obj.get("name").getAsString();
-                    info.language = obj.get("language").getAsString();
-                    info.gender = obj.get("gender").getAsString();
+                    VoiceInfo info = new VoiceInfo(
+                            obj.get("id").getAsString(),
+                            obj.get("language").getAsString(),
+                            obj.get("gender").getAsString()
+                    );
                     result.put(info.id, info);
                 }
                 return result;
@@ -105,7 +109,7 @@ public class RealtimeSpeechManager {
         String url = this.url + "v1/tts/piper/speak";
         String payload = String.format(
                 "{\"text\": \"%s\", \"voice\": \"%s\"}",
-                OnlineSpeechManager.cleanPhrase(text), voiceId
+                text, voiceId
         );
         download(output, url, payload, "");
     }
@@ -118,12 +122,14 @@ public class RealtimeSpeechManager {
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("xi-api-key", key);
+            connection.setRequestProperty("player2-game-key", "minecraft-comes-alive-reborn");
 
             try (OutputStream os = connection.getOutputStream()) {
                 os.write(payload.getBytes(StandardCharsets.UTF_8));
             }
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                if (output == null) return;
                 try (InputStream inputStream = connection.getInputStream()) {
                     byte[] buffer = new byte[CHUNK_SIZE];
                     int bytesRead;

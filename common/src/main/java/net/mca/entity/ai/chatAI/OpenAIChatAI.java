@@ -172,6 +172,11 @@ public class OpenAIChatAI implements ChatAIStrategy {
                 sb.append(s);
             }
 
+            // try to match player language
+            if (MCA.language != null) {
+                sb.append("Match the language of the player, and use ").append(MCA.language).append(" when unsure.");
+            }
+
             String system = sb.toString();
 
             // construct body

@@ -26,9 +26,9 @@ public class OnlineSpeechManager {
 
     private boolean warningIssued = false;
 
-    public void play(String text, String gameLang, String gender, float pitch, float gene, Entity entity, boolean translatable) {
+    public void play(String phrase, String gameLang, String gender, float pitch, float gene, Entity entity, boolean translatable) {
         if (!translatable) return;
-
+        String text = OnlineSpeechManager.cleanPhrase(phrase);
         String language = OnlineLanguageMap.LANGUAGE_MAP.getOrDefault(gameLang, "");
         if (language.isEmpty()) {
             // The language is not supported by the TTS server
@@ -65,7 +65,7 @@ public class OnlineSpeechManager {
 
     public void downloadAudio(OutputStream output, String language, String voice, String text) {
         Map<String, String> params = Map.of(
-                "text", cleanPhrase(text),
+                "text", text,
                 "language", language,
                 "speaker", voice,
                 "file_format", "ogg",
