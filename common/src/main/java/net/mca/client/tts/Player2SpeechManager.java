@@ -1,7 +1,11 @@
 package net.mca.client.tts;
 
+import net.mca.MCA;
 import net.mca.client.tts.resources.Player2LanguageMap;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -14,6 +18,9 @@ public class Player2SpeechManager extends RealtimeSpeechManager {
     public void play(String text, String gender, String language, float pitch, float gene) {
         CompletableFuture.runAsync(() -> {
             List<String> voices = getVoices(language, gender);
+            if (voices == null) {
+                return;
+            }
             if (voices.isEmpty()) {
                 OnlineSpeechManager.languageNotSupported();
                 return;
@@ -45,5 +52,23 @@ public class Player2SpeechManager extends RealtimeSpeechManager {
                 .filter(info -> info.language.equals(language) && info.gender.equals(gender))
                 .map(info -> info.id)
                 .toList();
+    }
+
+    public boolean checkHealth() {
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(url + "v1/health").openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("player2-game-key", "minecraft-comes-alive-reborn");
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                return true;
+            } else {
+                MCA.LOGGER.warn("Failed to check player2 health: {} - {}", connection.getResponseCode(), connection.getResponseMessage());
+            }
+        } catch (IOException e) {
+            MCA.LOGGER.debug("Failed to check player2 health: {}", e.getMessage());
+        }
+        return false;
     }
 }

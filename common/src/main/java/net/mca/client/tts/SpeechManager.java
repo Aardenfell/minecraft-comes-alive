@@ -25,6 +25,7 @@ import net.minecraft.util.math.random.Random;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class SpeechManager {
     public static final SpeechManager INSTANCE = new SpeechManager();
@@ -121,6 +122,27 @@ public class SpeechManager {
                     currentlyPlaying.put(sender, instance);
                     client.getSoundManager().play(instance);
                 }
+            }
+        }
+    }
+
+    private long lastHealthCheckTime = 0;
+    private boolean firstRun = true;
+
+    public void tick(MinecraftClient client) {
+        if (client.world != null) {
+            long time = client.world.getTime();
+            if (Math.abs(time - lastHealthCheckTime) > 1200) {
+                boolean enabled = Config.getInstance().villagerChatAIModel.equals("player2");
+                if (firstRun || enabled) {
+                    CompletableFuture.runAsync(() -> {
+                        if (player2SpeechManager.checkHealth() && firstRun && !enabled) {
+                            client.inGameHud.getChatHud().addMessage(Text.translatable("command.chat_ai.player2.hint", "/mca chatAI player2"));
+                            firstRun = false;
+                        }
+                    });
+                }
+                lastHealthCheckTime = time;
             }
         }
     }

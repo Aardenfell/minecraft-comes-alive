@@ -41,6 +41,9 @@ public class RealtimeSpeechManager {
 
     public void play(String text, String gender, String language, float pitch, float gene, Entity entity, boolean cacheable) {
         List<String> voices = getVoices(language, gender);
+        if (voices == null) {
+            return;
+        }
         if (voices.isEmpty()) {
             OnlineSpeechManager.languageNotSupported();
             return;
@@ -68,7 +71,7 @@ public class RealtimeSpeechManager {
             voiceInfoMap = fetchVoices(this.url + "v1/tts/piper/voices");
         }
         if (voiceInfoMap == null) {
-            return Collections.emptyList();
+            return null;
         }
         return voiceInfoMap.values().stream()
                 .filter(info -> info.language.toLowerCase(Locale.ROOT).substring(0, 2).equals(language.substring(0, 2)) && info.gender.equals(gender))
