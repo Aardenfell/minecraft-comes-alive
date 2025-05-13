@@ -8,6 +8,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import java.text.Normalizer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import static net.mca.entity.VillagerLike.VILLAGER_NAME;
 
@@ -86,9 +87,11 @@ public class ChatAI {
         String normalizedMsg = normalizeString(msg);
         for (VillagerEntityMCA villager : nearbyVillagers) {
             String normalizedName = normalizeString(villager.getTrackedValue(VILLAGER_NAME));
-            // Return first match
-            if (normalizedMsg.contains(normalizedName)) {
-                return Optional.of(villager);
+            String[] nameParts = normalizedName.split(" ");
+            for (String part : nameParts) {
+                if (Pattern.compile("\\b" + Pattern.quote(part) + "\\b").matcher(normalizedMsg).find()) {
+                    return Optional.of(villager);
+                }
             }
         }
 
