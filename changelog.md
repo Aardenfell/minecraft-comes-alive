@@ -1,6 +1,16 @@
 # 7.6.4
 
 * Rose gold does no longer classify as gold, interfering with recipes
+* Fixed some GUI crashes
+* Fixed deaths counting sometimes twice (two mails, double hearts, ...)
+* ChatAI related stuff:
+    * Added better integration
+      with [Player2](https://github.com/Luke100000/minecraft-comes-alive/wiki/GPT3-based-conversations#Player2)
+    * Villager no longer starts to yap when you mention a fraction of their name
+    * Villagers will now try to respond in your selected language by default
+* TTS related stuff (https://github.com/Luke100000/minecraft-comes-alive/wiki/TTS):
+    * Added realtime TTS (experimental, worse quality, less languages, but works together with the ChatAI)
+    * Added TTS support for ElevenLabs (thanks BinaryGun951!) (Requires an ElevenLabs API key!)
 
 # 7.6.3
 
