@@ -1,5 +1,6 @@
 package net.mca.entity.ai.chatAI.inworldAIModules;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.mca.entity.VillagerEntityMCA;
 import net.mca.entity.ai.MoveState;
@@ -7,23 +8,33 @@ import net.mca.entity.ai.chatAI.inworldAIModules.api.Interaction;
 import net.mca.entity.ai.chatAI.inworldAIModules.api.TriggerEvent;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 /**
  * Class to manage command triggers (wear armor, follow me, etc.)
  */
 public class TriggerModule {
 
-    /** Map for trigger name => actions */
-    private static final Map<String, BiConsumer<ServerPlayerEntity, VillagerEntityMCA>> triggerActions = ImmutableMap.of(
-            "follow-player", (p, v) -> v.getVillagerBrain().setMoveState(MoveState.FOLLOW, p),
-            "stay-here", (p, v) -> v.getVillagerBrain().setMoveState(MoveState.STAY, p),
-            "move-freely", (p, v) -> v.getVillagerBrain().setMoveState(MoveState.MOVE, p),
-            "wear-armor", (p, v) -> v.getVillagerBrain().setArmorWear(true),
-            "remove-armor", (p, v) -> v.getVillagerBrain().setArmorWear(false),
-            "try-go-home", (p, v) -> v.getResidency().goHome(p)
+    public static final List<TriggerCommandInfo> triggerCommands = ImmutableList.of(
+            new TriggerCommandInfo("follow-player", "Follow the player talking to you", (p, v) -> v.getVillagerBrain().setMoveState(MoveState.FOLLOW, p)),
+            new TriggerCommandInfo("stay-here", "Stay put", (p, v) -> v.getVillagerBrain().setMoveState(MoveState.STAY, p)),
+            new TriggerCommandInfo("move-freely", "Move freely", (p, v) -> v.getVillagerBrain().setMoveState(MoveState.MOVE, p)),
+            new TriggerCommandInfo("wear-armor", "Equip any armor you have", (p, v) -> v.getVillagerBrain().setArmorWear(true)),
+            new TriggerCommandInfo("remove-armor", "Remove all the armor currently equipped", (p, v) -> v.getVillagerBrain().setArmorWear(false)),
+            new TriggerCommandInfo("try-go-home", "Try to go to your home in the village if possible", (p, v) -> v.getResidency().goHome(p))
     );
+
+    /** Map for trigger name => actions */
+    private static final Map<String, BiConsumer<ServerPlayerEntity, VillagerEntityMCA>> triggerActions =
+            triggerCommands.stream().collect(Collectors.toMap(
+                    i -> i.command,
+                    i -> i.call
+            ));
 
     /**
      * Looks for outgoing triggers from the last interaction
@@ -45,4 +56,5 @@ public class TriggerModule {
             }
         }
     }
+
 }
