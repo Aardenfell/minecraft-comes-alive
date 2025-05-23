@@ -10,7 +10,6 @@ import net.mca.entity.VillagerEntityMCA;
 import net.mca.entity.ai.chatAI.inworldAIModules.TriggerCommandInfo;
 import net.mca.entity.ai.chatAI.inworldAIModules.TriggerModule;
 import net.mca.entity.ai.chatAI.modules.*;
-import net.minecraft.server.command.TriggerCommand;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -64,8 +63,6 @@ public class OpenAIChatAI implements ChatAIStrategy {
         String message = map.has("choices") ? map.getAsJsonArray("choices").get(0).getAsJsonObject().getAsJsonObject("message").getAsJsonPrimitive("content").getAsString() : null;
         String error = map.has("error") ? map.get("error").getAsString().trim().replace("\n", " ") : null;
 
-        message = message == null ? null : cleanupAnswer(message);
-
         if (message != null) {
             // Parse json further, potentially
             message = message.replaceAll("```", "");
@@ -77,14 +74,13 @@ public class OpenAIChatAI implements ChatAIStrategy {
             }
         }
 
-        System.out.println("ASDF message: " + message);
-
         StructuredResponse structuredReply;
         try {
             structuredReply = new Gson().fromJson(message, StructuredResponse.class);
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
             // just treat the message as normal
+            message = message == null ? null : cleanupAnswer(message);
             structuredReply = new StructuredResponse(message, "");
         }
 
@@ -250,12 +246,8 @@ public class OpenAIChatAI implements ChatAIStrategy {
                 token = variables.get("player");
             }
 
-            System.out.println("ASDF POST: " + body.toString());
-
             // encode and create url
             Answer message = post(config.villagerChatAIEndpoint, body.toString(), token);
-
-            System.out.println("ASDF got answer: " + message);
 
             if (message.error == null) {
                 // remember
