@@ -8,10 +8,7 @@ import net.mca.entity.ai.chatAI.inworldAIModules.api.Interaction;
 import net.mca.entity.ai.chatAI.inworldAIModules.api.TriggerEvent;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -26,7 +23,8 @@ public class TriggerModule {
             new TriggerCommandInfo("move-freely", "Move freely", (p, v) -> v.getVillagerBrain().setMoveState(MoveState.MOVE, p)),
             new TriggerCommandInfo("wear-armor", "Equip any armor you have", (p, v) -> v.getVillagerBrain().setArmorWear(true)),
             new TriggerCommandInfo("remove-armor", "Remove all the armor currently equipped", (p, v) -> v.getVillagerBrain().setArmorWear(false)),
-            new TriggerCommandInfo("try-go-home", "Try to go to your home in the village if possible", (p, v) -> v.getResidency().goHome(p))
+            new TriggerCommandInfo("try-go-home", "Try to go to your home in the village if possible", (p, v) -> v.getResidency().goHome(p)),
+            new TriggerCommandInfo("open-trade-window", "Lets the player trade with you", (p, v) -> v.tryBeginTradeWith(p))
     );
 
     /** Map for trigger name => actions */
@@ -35,6 +33,15 @@ public class TriggerModule {
                     i -> i.command,
                     i -> i.call
             ));
+
+    public static Optional<TriggerCommandInfo> findCommand(String command) {
+        for (TriggerCommandInfo commandInfo : triggerCommands) {
+            if (command.equals(commandInfo.command)) {
+                return Optional.of(commandInfo);
+            }
+        }
+        return Optional.empty();
+    }
 
     /**
      * Looks for outgoing triggers from the last interaction

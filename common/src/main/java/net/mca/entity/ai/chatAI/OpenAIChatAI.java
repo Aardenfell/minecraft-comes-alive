@@ -218,6 +218,8 @@ public class OpenAIChatAI implements ChatAIStrategy {
 
             String system = sb.toString();
 
+            System.out.println("System: " + system);
+
             // construct body
             StringBuilder body = new StringBuilder();
             body.append("{");
@@ -250,11 +252,18 @@ public class OpenAIChatAI implements ChatAIStrategy {
             Answer message = post(config.villagerChatAIEndpoint, body.toString(), token);
 
             if (message.error == null) {
-                // remember
                 if (message.answer != null) {
+                    // remember
                     pastDialogue.add(new Pair<>("user", msg));
                     pastDialogue.add(new Pair<>("assistant", message.answer.message));
+
+                    // act
+                    if (message.answer().optionalCommand() != null && !message.answer().optionalCommand().isEmpty()) {
+                        Optional<TriggerCommandInfo> command = TriggerModule.findCommand(message.answer().optionalCommand());
+                        command.ifPresent(triggerCommandInfo -> triggerCommandInfo.call.accept(player, villager));
+                    }
                 }
+
                 return Optional.ofNullable(message.answer != null ? message.answer.message : null);
             } else if (message.error.equals("invalid_model")) {
                 player.sendMessage(Text.literal("Invalid model!").formatted(Formatting.RED), false);

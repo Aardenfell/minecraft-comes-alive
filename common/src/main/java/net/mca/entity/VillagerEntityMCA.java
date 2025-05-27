@@ -498,6 +498,15 @@ public class VillagerEntityMCA extends VillagerEntity implements VillagerLike<Vi
         }
     }
 
+    public boolean tryBeginTradeWith(PlayerEntity customer) {
+        boolean hasOffers = !getOffers().isEmpty();
+        if (!hasOffers) {
+            return false;
+        }
+        copiedBeginTradeWith(customer);
+        return true;
+    }
+
     private void copiedBeginTradeWith(PlayerEntity customer) {
         this.copiedPrepareOffersFor(customer);
         this.setCustomer(customer);
