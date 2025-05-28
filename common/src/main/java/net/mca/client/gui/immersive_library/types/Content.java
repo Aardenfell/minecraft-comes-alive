@@ -17,13 +17,4 @@ public record Content(int contentid, int userid, String username, int likes, Set
                 ", data='" + data + '\'' +
                 '}';
     }
-
-    public boolean hasTag(String filter) {
-        for (String tag : tags) {
-            if (tag.equals(filter)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
