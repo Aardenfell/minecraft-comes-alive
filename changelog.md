@@ -1,3 +1,8 @@
+# 7.6.6
+
+* Allow tripplets, quadruplets, quintuplets, and beyond
+* Fixed a crash in the skin editor
+
 # 7.6.5
 
 * Fixed a crash
