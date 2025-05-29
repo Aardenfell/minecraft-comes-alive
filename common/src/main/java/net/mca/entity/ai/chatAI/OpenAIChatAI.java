@@ -63,6 +63,8 @@ public class OpenAIChatAI implements ChatAIStrategy {
         String message = map.has("choices") ? map.getAsJsonArray("choices").get(0).getAsJsonObject().getAsJsonObject("message").getAsJsonPrimitive("content").getAsString() : null;
         String error = map.has("error") ? map.get("error").getAsString().trim().replace("\n", " ") : null;
 
+        System.out.println("parseAnswer got: " + body);
+
         if (message != null) {
             // Parse json further, potentially
             message = message.replaceAll("```", "");
@@ -202,18 +204,20 @@ public class OpenAIChatAI implements ChatAIStrategy {
                 sb.append("Match the language of the player, and use ").append(MCA.language).append(" when unsure.");
             }
 
-            // structure and commands
+            // structure and commands (if available)
             List<TriggerCommandInfo> validCommands;
             if (config.villagerChatAIUseTools) {
-                validCommands = TriggerModule.triggerCommands;
+                validCommands = TriggerModule.triggerCommands.stream().filter(c -> c.isActive == null || c.isActive.test(player, villager)).toList();
             } else {
                 validCommands = List.of();
             }
-            String structureExample = new Gson().toJson(new StructuredResponse("example message to say", !validCommands.isEmpty() ? validCommands.get(0).command : ""));
-            sb.append("The reply MUST be in this JSON format: ").append(structureExample).append("\n");
-            sb.append("The following commands are valid:\n");
-            for (TriggerCommandInfo command : validCommands) {
-                sb.append("    ").append(command.command).append(": ").append(command.description).append("\n");
+            if (!validCommands.isEmpty()) {
+                String structureExample = new Gson().toJson(new StructuredResponse("example message to say", !validCommands.isEmpty() ? validCommands.get(0).command : ""));
+                sb.append("The reply MUST be in this JSON format: ").append(structureExample).append("\n");
+                sb.append("The following commands are valid:\n");
+                for (TriggerCommandInfo command : validCommands) {
+                    sb.append("    ").append(command.command).append(": ").append(command.description).append("\n");
+                }
             }
 
             String system = sb.toString();
@@ -259,7 +263,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
 
                     // act
                     if (message.answer().optionalCommand() != null && !message.answer().optionalCommand().isEmpty()) {
-                        Optional<TriggerCommandInfo> command = TriggerModule.findCommand(message.answer().optionalCommand());
+                        Optional<TriggerCommandInfo> command = TriggerModule.findCommand(message.answer().optionalCommand(), player, villager);
                         command.ifPresent(triggerCommandInfo -> triggerCommandInfo.call.accept(player, villager));
                     }
                 }

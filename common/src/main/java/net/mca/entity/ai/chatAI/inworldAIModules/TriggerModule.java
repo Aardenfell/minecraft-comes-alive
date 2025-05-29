@@ -24,7 +24,7 @@ public class TriggerModule {
             new TriggerCommandInfo("wear-armor", "Equip any armor you have", (p, v) -> v.getVillagerBrain().setArmorWear(true)),
             new TriggerCommandInfo("remove-armor", "Remove all the armor currently equipped", (p, v) -> v.getVillagerBrain().setArmorWear(false)),
             new TriggerCommandInfo("try-go-home", "Try to go to your home in the village if possible", (p, v) -> v.getResidency().goHome(p)),
-            new TriggerCommandInfo("open-trade-window", "Lets the player trade with you", (p, v) -> v.tryBeginTradeWith(p))
+            new TriggerCommandInfo("open-trade-window", "Lets the player trade with you. Open whenever the player is interested in trading, wants to check your prices or your inventory.", (p, v) -> v.beginTradeWith(p), (p, v) -> v.hasTradeOffers())
     );
 
     /** Map for trigger name => actions */
@@ -34,9 +34,13 @@ public class TriggerModule {
                     i -> i.call
             ));
 
-    public static Optional<TriggerCommandInfo> findCommand(String command) {
+    public static Optional<TriggerCommandInfo> findCommand(String command, ServerPlayerEntity player, VillagerEntityMCA villagerEntityMCA) {
         for (TriggerCommandInfo commandInfo : triggerCommands) {
             if (command.equals(commandInfo.command)) {
+                if (commandInfo.isActive != null && !commandInfo.isActive.test(player, villagerEntityMCA)) {
+                    // not active now
+                    continue;
+                }
                 return Optional.of(commandInfo);
             }
         }
