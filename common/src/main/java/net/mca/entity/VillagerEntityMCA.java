@@ -473,7 +473,7 @@ public class VillagerEntityMCA extends VillagerEntity implements VillagerLike<Vi
             if (isBaby()) {
                 copiedSayNo();
             } else {
-                boolean hasOffers = !getOffers().isEmpty();
+                boolean hasOffers = hasTradeOffers();
                 if (hand == Hand.MAIN_HAND) {
                     if (!hasOffers && !getWorld().isClient) {
                         copiedSayNo();
@@ -496,6 +496,14 @@ public class VillagerEntityMCA extends VillagerEntity implements VillagerLike<Vi
         if (!this.getWorld().isClient()) {
             this.playSound(this.getNoSound(), this.getSoundVolume(), this.getSoundPitch());
         }
+    }
+
+    public boolean hasTradeOffers() {
+        return !getOffers().isEmpty();
+    }
+
+    public void beginTradeWith(PlayerEntity customer) {
+        copiedBeginTradeWith(customer);
     }
 
     private void copiedBeginTradeWith(PlayerEntity customer) {

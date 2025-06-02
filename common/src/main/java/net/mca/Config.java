@@ -107,7 +107,8 @@ public final class Config implements Serializable {
     @SuppressWarnings("unused")
     public String _read_this_before_using_villager_ai = "https://github.com/Luke100000/minecraft-comes-alive/wiki/GPT3-based-conversations";
     public boolean enableVillagerChatAI = false;
-    public String villagerChatAIEndpoint = "https://api.conczin.net/v1/mca/chat";
+    public String villagerChatAIEndpoint = "http://127.0.0.1:4315/v1/chat/completions";
+    public boolean villagerChatAIUseTools = true;
     public String villagerChatAIToken = "";
     public String villagerChatAIModel = "default";
     public String villagerChatAISystemPrompt = "";

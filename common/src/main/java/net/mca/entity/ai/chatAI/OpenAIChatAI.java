@@ -1,10 +1,14 @@
 package net.mca.entity.ai.chatAI;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import net.mca.Config;
 import net.mca.MCA;
 import net.mca.entity.VillagerEntityMCA;
+import net.mca.entity.ai.chatAI.inworldAIModules.TriggerCommandInfo;
+import net.mca.entity.ai.chatAI.inworldAIModules.TriggerModule;
 import net.mca.entity.ai.chatAI.modules.*;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
@@ -34,7 +38,11 @@ public class OpenAIChatAI implements ChatAIStrategy {
         return phrase.replace("_", " ").toLowerCase(Locale.ROOT).replace("mca.", "");
     }
 
-    public record Answer(String answer, String error) {
+    public record StructuredResponse(String message, String optionalCommand) {
+
+    }
+
+    public record Answer(StructuredResponse answer, String error) {
     }
 
     private static HttpURLConnection getHttpURLConnection(String url, String token) throws IOException {
@@ -50,6 +58,37 @@ public class OpenAIChatAI implements ChatAIStrategy {
         return con;
     }
 
+    private static Answer parseAnswer(String body) {
+        JsonObject map = JsonParser.parseString(body).getAsJsonObject();
+        String message = map.has("choices") ? map.getAsJsonArray("choices").get(0).getAsJsonObject().getAsJsonObject("message").getAsJsonPrimitive("content").getAsString() : null;
+        String error = map.has("error") ? map.get("error").getAsString().trim().replace("\n", " ") : null;
+
+        System.out.println("parseAnswer got: " + body);
+
+        if (message != null) {
+            // Parse json further, potentially
+            message = message.replaceAll("```", "");
+            int bracketStart = message.indexOf("{");
+            int bracketEnd = message.lastIndexOf("}");
+            if (bracketEnd > bracketStart && bracketStart != -1 && bracketEnd != -1) {
+                // We have json! Include the brackets.
+                message = message.substring(bracketStart, bracketEnd + 1);
+            }
+        }
+
+        StructuredResponse structuredReply;
+        try {
+            structuredReply = new Gson().fromJson(message, StructuredResponse.class);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+            // just treat the message as normal
+            message = message == null ? null : cleanupAnswer(message);
+            structuredReply = new StructuredResponse(message, "");
+        }
+
+        return new Answer(structuredReply, error);
+    }
+
     public static Answer post(String url, String requestBody, String token) {
         try {
             HttpURLConnection con = getHttpURLConnection(url, token);
@@ -63,14 +102,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
             InputStream response = con.getInputStream();
             String body = IOUtils.toString(response, StandardCharsets.UTF_8);
 
-            // parse json
-            JsonObject map = JsonParser.parseString(body).getAsJsonObject();
-            String message = map.has("choices") ? map.getAsJsonArray("choices").get(0).getAsJsonObject().getAsJsonObject("message").getAsJsonPrimitive("content").getAsString() : null;
-            String error = map.has("error") ? map.get("error").getAsString().trim().replace("\n", " ") : null;
-
-            message = message == null ? null : cleanupAnswer(message);
-
-            return new Answer(message, error);
+            return parseAnswer(body);
         } catch (Exception e) {
             MCA.LOGGER.error(e);
             return new Answer(null, "Unknown error, check log!");
@@ -85,12 +117,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
             InputStream response = con.getInputStream();
             String body = IOUtils.toString(response, StandardCharsets.UTF_8);
 
-            // parse json
-            JsonObject map = JsonParser.parseString(body).getAsJsonObject();
-            String answer = map.has("answer") ? map.get("answer").getAsString().trim().replace("\n", " ") : "";
-            String error = map.has("error") ? map.get("error").getAsString().trim().replace("\n", " ") : null;
-
-            return new Answer(answer, error);
+            return parseAnswer(body);
         } catch (Exception e) {
             MCA.LOGGER.error(e);
             return new Answer(null, "unknown");
@@ -177,13 +204,33 @@ public class OpenAIChatAI implements ChatAIStrategy {
                 sb.append("Match the language of the player, and use ").append(MCA.language).append(" when unsure.");
             }
 
+            // structure and commands (if available)
+            List<TriggerCommandInfo> validCommands;
+            if (config.villagerChatAIUseTools) {
+                validCommands = TriggerModule.triggerCommands.stream().filter(c -> c.isActive == null || c.isActive.test(player, villager)).toList();
+            } else {
+                validCommands = List.of();
+            }
+            if (!validCommands.isEmpty()) {
+                String structureExample = new Gson().toJson(new StructuredResponse("example message to say", !validCommands.isEmpty() ? validCommands.get(0).command : ""));
+                sb.append("The reply MUST be in this JSON format: ").append(structureExample).append("\n");
+                sb.append("The following commands are valid:\n");
+                for (TriggerCommandInfo command : validCommands) {
+                    sb.append("    ").append(command.command).append(": ").append(command.description).append("\n");
+                }
+            }
+
             String system = sb.toString();
+
+            System.out.println("System: " + system);
 
             // construct body
             StringBuilder body = new StringBuilder();
             body.append("{");
             body.append("\"model\": \"").append(config.villagerChatAIModel).append("\",");
+            // START Messages
             body.append("\"messages\": [");
+            // System Message
             body.append("{\"role\": \"system\", \"content\": ").append(jsonStringQuote(system)).append("},");
             for (Pair<String, String> pair : pastDialogue) {
                 String role = pair.getLeft();
@@ -193,8 +240,11 @@ public class OpenAIChatAI implements ChatAIStrategy {
                         .append("\", \"name\": \"").append(name)
                         .append("\", \"content\": ").append(jsonStringQuote(content)).append("},");
             }
+            // User Message
             body.append("{\"role\": \"user\", \"name\": \"").append(playerName).append("\", \"content\": ").append(jsonStringQuote(msg)).append("}");
-            body.append("]}");
+            // END Messages
+            body.append("]");
+            body.append("}");
 
             // get access token
             String token = config.villagerChatAIToken;
@@ -206,12 +256,19 @@ public class OpenAIChatAI implements ChatAIStrategy {
             Answer message = post(config.villagerChatAIEndpoint, body.toString(), token);
 
             if (message.error == null) {
-                // remember
                 if (message.answer != null) {
+                    // remember
                     pastDialogue.add(new Pair<>("user", msg));
-                    pastDialogue.add(new Pair<>("assistant", message.answer));
+                    pastDialogue.add(new Pair<>("assistant", message.answer.message));
+
+                    // act
+                    if (message.answer().optionalCommand() != null && !message.answer().optionalCommand().isEmpty()) {
+                        Optional<TriggerCommandInfo> command = TriggerModule.findCommand(message.answer().optionalCommand(), player, villager);
+                        command.ifPresent(triggerCommandInfo -> triggerCommandInfo.call.accept(player, villager));
+                    }
                 }
-                return Optional.ofNullable(message.answer);
+
+                return Optional.ofNullable(message.answer != null ? message.answer.message : null);
             } else if (message.error.equals("invalid_model")) {
                 player.sendMessage(Text.literal("Invalid model!").formatted(Formatting.RED), false);
             } else if (message.error.equals("limit")) {
