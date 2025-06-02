@@ -1,13 +1,10 @@
-# 7.6.7
-
-* Disabled guard teleportation by default again
-* Added experimental support for commands via ChatAI (`villagerChatAIUseTools` in the config, will react to trading, go
-  home, stay here, ...)
-
 # 7.6.6
 
 * Allow tripplets, quadruplets, quintuplets, and beyond
 * Fixed a crash in the skin editor
+* Disabled guard teleportation by default again
+* Added experimental support for commands via ChatAI (`villagerChatAIUseTools` in the config, will react to trading, go
+  home, stay here, ...) (Thanks AdrisJ6 and Player2!)
 
 # 7.6.5
 
