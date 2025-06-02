@@ -1,6 +1,9 @@
 package net.mca.client.tts;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.mca.MCA;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
@@ -12,8 +15,12 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.zip.GZIPInputStream;
 
 
 public class RealtimeSpeechManager {
@@ -83,9 +90,12 @@ public class RealtimeSpeechManager {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept-Encoding", "gzip");
+            connection.setRequestProperty("Accept", "application/json");
 
             try (InputStream input = connection.getInputStream();
-                 InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
+                 InputStreamReader reader = new InputStreamReader("gzip".equals(connection.getContentEncoding()) ? new GZIPInputStream(input) : input, StandardCharsets.UTF_8)) {
 
                 JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
                 JsonArray voices = root.getAsJsonArray("voices");
