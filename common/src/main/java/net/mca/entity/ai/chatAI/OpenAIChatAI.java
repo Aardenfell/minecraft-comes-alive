@@ -76,7 +76,8 @@ public class OpenAIChatAI implements ChatAIStrategy {
         try {
             structuredReply = new Gson().fromJson(message, StructuredResponse.class);
         } catch (JsonSyntaxException e) {
-            e.printStackTrace();
+            MCA.LOGGER.warn("Error parsing answer: {} ({})", message, e.getMessage());
+
             // just treat the message as normal
             message = message == null ? null : cleanupAnswer(message);
             structuredReply = new StructuredResponse(message, "");
@@ -105,7 +106,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
         }
     }
 
-    public static Answer request(String encodedURL) {
+    public static String verify(String encodedURL) {
         try {
             // receive
             HttpURLConnection con = (HttpURLConnection) (new URL(encodedURL)).openConnection();
@@ -113,10 +114,12 @@ public class OpenAIChatAI implements ChatAIStrategy {
             InputStream response = con.getInputStream();
             String body = IOUtils.toString(response, StandardCharsets.UTF_8);
 
-            return parseAnswer(body);
+            // parse json
+            JsonObject map = JsonParser.parseString(body).getAsJsonObject();
+            return map.has("answer") ? map.get("answer").getAsString().trim().replace("\n", " ") : "";
         } catch (Exception e) {
             MCA.LOGGER.error(e);
-            return new Answer(null, "unknown");
+            return "error";
         }
     }
 
@@ -206,16 +209,19 @@ public class OpenAIChatAI implements ChatAIStrategy {
                 validCommands = TriggerCommandInfos.triggerCommands.stream()
                         .filter(c -> c.isActive == null || c.isActive.test(player, villager))
                         .toList();
+                MCA.LOGGER.info("Valid commands: {}", validCommands.stream().map(c -> c.command).toList());
             } else {
                 validCommands = List.of();
             }
             if (!validCommands.isEmpty()) {
                 String structureExample = new Gson().toJson(new StructuredResponse("example message to say", validCommands.get(0).command));
+                sb.append("\n\n");
                 sb.append("The reply MUST be in this JSON format: ").append(structureExample).append("\n");
                 sb.append("The following commands are valid:\n");
                 for (TriggerCommandInfo command : validCommands) {
-                    sb.append("    ").append(command.command).append(": ").append(command.description).append("\n");
+                    sb.append("  * ").append(command.command).append(": ").append(command.description).append("\n");
                 }
+                sb.append("Only use a command when the player explicitly asks for it.");
             }
 
             String system = sb.toString();

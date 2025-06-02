@@ -223,11 +223,11 @@ public class Command {
                     .map(key -> key + "=" + URLEncoder.encode(params.get(key), StandardCharsets.UTF_8))
                     .collect(Collectors.joining("&", Config.getInstance().villagerChatAIEndpoint.replace("v1/mca/chat", "v1/mca/verify") + "?", ""));
 
-            OpenAIChatAI.Answer request = OpenAIChatAI.request(encodedURL);
+            String request = OpenAIChatAI.verify(encodedURL);
 
-            if (request.answer().equals("success")) {
+            if (request.equals("success")) {
                 sendMessage(ctx, Text.translatable("command.verify.success").formatted(Formatting.GREEN));
-            } else if (request.answer().equals("failed")) {
+            } else if (request.equals("failed")) {
                 sendMessage(ctx, Text.translatable("command.verify.failed").formatted(Formatting.RED));
             } else {
                 sendMessage(ctx, Text.translatable("command.verify.crashed").formatted(Formatting.RED));
