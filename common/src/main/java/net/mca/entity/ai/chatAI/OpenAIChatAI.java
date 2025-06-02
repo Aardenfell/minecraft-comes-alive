@@ -7,8 +7,6 @@ import com.google.gson.JsonSyntaxException;
 import net.mca.Config;
 import net.mca.MCA;
 import net.mca.entity.VillagerEntityMCA;
-import net.mca.entity.ai.chatAI.inworldAIModules.TriggerCommandInfo;
-import net.mca.entity.ai.chatAI.inworldAIModules.TriggerModule;
 import net.mca.entity.ai.chatAI.modules.*;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
@@ -63,14 +61,12 @@ public class OpenAIChatAI implements ChatAIStrategy {
         String message = map.has("choices") ? map.getAsJsonArray("choices").get(0).getAsJsonObject().getAsJsonObject("message").getAsJsonPrimitive("content").getAsString() : null;
         String error = map.has("error") ? map.get("error").getAsString().trim().replace("\n", " ") : null;
 
-        System.out.println("parseAnswer got: " + body);
-
         if (message != null) {
-            // Parse json further, potentially
+            // Parse json further
             message = message.replaceAll("```", "");
             int bracketStart = message.indexOf("{");
             int bracketEnd = message.lastIndexOf("}");
-            if (bracketEnd > bracketStart && bracketStart != -1 && bracketEnd != -1) {
+            if (bracketEnd > bracketStart && bracketStart != -1) {
                 // We have json! Include the brackets.
                 message = message.substring(bracketStart, bracketEnd + 1);
             }
@@ -207,12 +203,14 @@ public class OpenAIChatAI implements ChatAIStrategy {
             // structure and commands (if available)
             List<TriggerCommandInfo> validCommands;
             if (config.villagerChatAIUseTools) {
-                validCommands = TriggerModule.triggerCommands.stream().filter(c -> c.isActive == null || c.isActive.test(player, villager)).toList();
+                validCommands = TriggerCommandInfos.triggerCommands.stream()
+                        .filter(c -> c.isActive == null || c.isActive.test(player, villager))
+                        .toList();
             } else {
                 validCommands = List.of();
             }
             if (!validCommands.isEmpty()) {
-                String structureExample = new Gson().toJson(new StructuredResponse("example message to say", !validCommands.isEmpty() ? validCommands.get(0).command : ""));
+                String structureExample = new Gson().toJson(new StructuredResponse("example message to say", validCommands.get(0).command));
                 sb.append("The reply MUST be in this JSON format: ").append(structureExample).append("\n");
                 sb.append("The following commands are valid:\n");
                 for (TriggerCommandInfo command : validCommands) {
@@ -221,8 +219,6 @@ public class OpenAIChatAI implements ChatAIStrategy {
             }
 
             String system = sb.toString();
-
-            System.out.println("System: " + system);
 
             // construct body
             StringBuilder body = new StringBuilder();
@@ -263,7 +259,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
 
                     // act
                     if (message.answer().optionalCommand() != null && !message.answer().optionalCommand().isEmpty()) {
-                        Optional<TriggerCommandInfo> command = TriggerModule.findCommand(message.answer().optionalCommand(), player, villager);
+                        Optional<TriggerCommandInfo> command = TriggerCommandInfos.findCommand(message.answer().optionalCommand(), player, villager);
                         command.ifPresent(triggerCommandInfo -> triggerCommandInfo.call.accept(player, villager));
                     }
                 }

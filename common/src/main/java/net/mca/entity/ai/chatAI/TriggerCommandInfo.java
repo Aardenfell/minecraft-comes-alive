@@ -1,4 +1,4 @@
-package net.mca.entity.ai.chatAI.inworldAIModules;
+package net.mca.entity.ai.chatAI;
 
 import net.mca.entity.VillagerEntityMCA;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -6,7 +6,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
-// TODO: you probably want a record...
 public class TriggerCommandInfo {
     public String command;
     public String description;
@@ -19,6 +18,7 @@ public class TriggerCommandInfo {
         this.call = call;
         this.isActive = isActive;
     }
+
     public TriggerCommandInfo(String command, String description, BiConsumer<ServerPlayerEntity, VillagerEntityMCA> call) {
         this(command, description, call, (p, v) -> true);
     }
