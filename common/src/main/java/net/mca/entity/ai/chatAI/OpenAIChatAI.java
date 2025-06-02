@@ -221,7 +221,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
                 for (TriggerCommandInfo command : validCommands) {
                     sb.append("  * ").append(command.command).append(": ").append(command.description).append("\n");
                 }
-                sb.append("Only use a command when the player explicitly asks for it.");
+                sb.append("Only use a command when the player asks for it.");
             }
 
             String system = sb.toString();

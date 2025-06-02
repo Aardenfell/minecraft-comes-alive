@@ -132,6 +132,7 @@ public class Command {
         Config.getInstance().villagerChatAIModel = "player2";
         Config.getInstance().villagerChatAIEndpoint = "http://127.0.0.1:4315/v1/chat/completions";
         Config.getInstance().villagerChatAIToken = "";
+        Config.getInstance().villagerChatAIUseTools = true;
 
         // And turn on TTS
         Config.getInstance().enableOnlineTTS = true;

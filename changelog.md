@@ -1,3 +1,9 @@
+# 7.6.7
+
+* Disabled guard teleportation by default again
+* Added experimental support for commands via ChatAI (`villagerChatAIUseTools` in the config, will react to trading, go
+  home, stay here, ...)
+
 # 7.6.6
 
 * Allow tripplets, quadruplets, quintuplets, and beyond
