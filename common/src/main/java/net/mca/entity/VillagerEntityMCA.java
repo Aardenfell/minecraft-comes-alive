@@ -31,7 +31,6 @@ import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
-import net.minecraft.entity.ai.control.JumpControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.ai.goal.TrackTargetGoal;
@@ -355,9 +354,10 @@ public class VillagerEntityMCA extends VillagerEntity implements VillagerLike<Vi
         //player just get a beating
         attackedEntity(target);
 
-        //base damage // todo attributes?
-        float damage = getProfession() == ProfessionsMCA.GUARD.get() ? 9 : 3;
-        float knockback = 1;
+        //base damage
+        double baseDamage = getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        float damage = (float) (baseDamage * (getProfession() == ProfessionsMCA.GUARD.get() ? 3.0f : 1.0f));
+        float knockback = (float) getAttributeValue(EntityAttributes.GENERIC_ATTACK_KNOCKBACK);
 
         //traits
         if (getTraits().hasTrait(Traits.WEAK)) {
@@ -612,7 +612,7 @@ public class VillagerEntityMCA extends VillagerEntity implements VillagerLike<Vi
                 && (getResidency().getHomeVillage().filter(v -> v.hasBuilding("infirmary")).isEmpty() || random.nextBoolean())) {
                 setInfected(true);
                 sendChatToAllAround("villager.bitten");
-                MCA.LOGGER.info(getName() + " has been infected");
+                MCA.LOGGER.info("{} has been infected", getName());
             }
         }
 
@@ -986,11 +986,6 @@ public class VillagerEntityMCA extends VillagerEntity implements VillagerLike<Vi
     @Override
     public MoveControl getMoveControl() {
         return isRidingHorse() ? moveControl : super.getMoveControl();
-    }
-
-    @Override
-    public JumpControl getJumpControl() {
-        return jumpControl;
     }
 
     @Override
@@ -1477,7 +1472,10 @@ public class VillagerEntityMCA extends VillagerEntity implements VillagerLike<Vi
     }
 
     public static DefaultAttributeContainer.Builder createVillagerAttributes() {
-        return VillagerEntity.createVillagerAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, Config.getInstance().villagerMaxHealth);
+        return VillagerEntity.createVillagerAttributes()
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0f)
+                .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0f)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, Config.getInstance().villagerMaxHealth);
     }
 
     private void tickDespawnDelay() {

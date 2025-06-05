@@ -137,7 +137,7 @@ public class Pregnancy {
 
         //make sure this villager is registered in the family tree
         int count = 1;
-        while (random.nextFloat() < Config.getInstance().twinBabyChance) {
+        while (random.nextFloat() < Config.getInstance().twinBabyChance && count < 8) {
             count++;
         }
 

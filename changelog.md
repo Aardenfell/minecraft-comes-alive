@@ -1,3 +1,8 @@
+# 7.6.7
+
+* Fixed a crash with The Aether
+* Increased twin chance to 5%
+
 # 7.6.6
 
 * Allow tripplets, quadruplets, quintuplets, and beyond

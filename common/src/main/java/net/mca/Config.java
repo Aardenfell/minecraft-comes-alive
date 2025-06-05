@@ -59,7 +59,7 @@ public final class Config implements Serializable {
     public int infectionTime = 72000;
 
     //villager behavior
-    public float twinBabyChance = 0.02f;
+    public float twinBabyChance = 0.05f;
     public int marriageHeartsRequirement = 100;
     public int engagementHeartsRequirement = 50;
     public int bouquetHeartsRequirement = 10;
