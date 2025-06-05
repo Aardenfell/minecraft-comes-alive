@@ -9,7 +9,7 @@
           "children": [
             {
               "type": "minecraft:item",
-              "name": "mca:gravelling_headstone",
+              "name": "mca:deepslate_upright_headstone",
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
@@ -23,12 +23,12 @@
             },
             {
               "type": "minecraft:item",
-              "name": "minecraft:cobblestone",
+              "name": "minecraft:deepslate",
               "conditions": [
                 {"condition": "minecraft:survives_explosion"}
               ],
               "functions": [
-                {"function": "minecraft:set_count", "count": 3}
+                {"function": "minecraft:set_count", "count": 4}
               ]
             }
           ]

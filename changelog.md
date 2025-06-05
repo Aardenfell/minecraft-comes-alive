@@ -1,6 +1,7 @@
 # 7.6.7
 
 * Fixed a crash with The Aether
+* Added missing tombstone loot tables and fixed particle textures
 * Increased twin chance to 5%
 
 # 7.6.6
