@@ -1,3 +1,7 @@
+# 7.6.8
+
+* Fixed a crash with llm command parsing
+
 # 7.6.7
 
 * Fixed a crash with The Aether

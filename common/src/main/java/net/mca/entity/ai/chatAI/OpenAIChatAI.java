@@ -79,7 +79,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
             MCA.LOGGER.warn("Error parsing answer: {} ({})", message, e.getMessage());
 
             // just treat the message as normal
-            message = message == null ? null : cleanupAnswer(message);
+            message = message == null ? "..." : cleanupAnswer(message);
             structuredReply = new StructuredResponse(message, "");
         }
 
@@ -264,8 +264,8 @@ public class OpenAIChatAI implements ChatAIStrategy {
                     pastDialogue.add(new Pair<>("assistant", message.answer.message));
 
                     // act
-                    if (message.answer().optionalCommand() != null && !message.answer().optionalCommand().isEmpty()) {
-                        Optional<TriggerCommandInfo> command = TriggerCommandInfos.findCommand(message.answer().optionalCommand(), player, villager);
+                    if (message.answer.optionalCommand() != null && !message.answer.optionalCommand().isEmpty()) {
+                        Optional<TriggerCommandInfo> command = TriggerCommandInfos.findCommand(message.answer.optionalCommand(), player, villager);
                         command.ifPresent(triggerCommandInfo -> triggerCommandInfo.call.accept(player, villager));
                     }
                 }
@@ -286,7 +286,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
                 player.sendMessage(Text.literal(message.error).formatted(Formatting.RED), false);
             }
         } catch (Exception e) {
-            MCA.LOGGER.error(e);
+            MCA.LOGGER.error("Failed to parse LLM response!", e);
             player.sendMessage(Text.translatable("mca.ai_broken").formatted(Formatting.RED), false);
         }
 
