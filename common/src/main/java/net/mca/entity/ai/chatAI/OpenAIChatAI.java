@@ -16,6 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
         return phrase.replace("_", " ").toLowerCase(Locale.ROOT).replace("mca.", "");
     }
 
-    public record StructuredResponse(String message, String optionalCommand) {
+    public record StructuredResponse(@Nullable String message, String optionalCommand) {
 
     }
 
@@ -79,8 +80,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
             MCA.LOGGER.warn("Error parsing answer: {} ({})", message, e.getMessage());
 
             // just treat the message as normal
-            message = message == null ? "..." : cleanupAnswer(message);
-            structuredReply = new StructuredResponse(message, "");
+            structuredReply = new StructuredResponse(cleanupAnswer(message), "");
         }
 
         return new Answer(structuredReply, error);
@@ -261,7 +261,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
                 if (message.answer != null) {
                     // remember
                     pastDialogue.add(new Pair<>("user", msg));
-                    pastDialogue.add(new Pair<>("assistant", message.answer.message));
+                    pastDialogue.add(new Pair<>("assistant", message.answer.message != null ? message.answer.message : "..."));
 
                     // act
                     if (message.answer.optionalCommand() != null && !message.answer.optionalCommand().isEmpty()) {
@@ -310,6 +310,7 @@ public class OpenAIChatAI implements ChatAIStrategy {
     }
 
     static String cleanupAnswer(String answer) {
+        if (answer == null) return null;
         answer = answer.replace("\"", "");
         answer = answer.replace("\n", " ");
         String[] parts = answer.split(":", 2);
