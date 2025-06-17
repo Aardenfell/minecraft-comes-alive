@@ -1,3 +1,7 @@
+# 7.6.10
+
+* Maybe fixed empty villages on pre-generated worlds (Thanks SlayerTheChikken!)
+
 # 7.6.8/9
 
 * Fixed a crash with llm command parsing
