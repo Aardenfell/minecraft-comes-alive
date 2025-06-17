@@ -348,8 +348,7 @@ public class AdminCommand {
 
         sendMessage(player, WHITE + " /mca-admin incrementHearts " + GOLD + " - Increase hearts by 10.");
         sendMessage(player, WHITE + " /mca-admin decrementHearts " + GOLD + " - Decrease hearts by 10.");
-        sendMessage(player, WHITE + " /mca-admin cve" + GOLD + " - Remove all villager editors from the game.");
-        sendMessage(player, WHITE + " /mca-admin resetPlayerData " + GOLD + " - Resets hearts, marriage status etc.");
+        sendMessage(player, WHITE + " /mca-admin resetPlayerData " + GOLD + " - Resets genetics.");
         sendMessage(player, WHITE + " /mca-admin resetMarriage " + GOLD + " - Resets your marriage.");
 
         sendMessage(player, WHITE + " /mca-admin listVillages " + GOLD + " - List all known villages.");
